@@ -18,14 +18,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
-        MyDB.execSQL("create Table users(name TEXT,contact TEXT primary key,address TEXT,landmark TEXT,coordinates TEXT)");
-        MyDB.execSQL("create Table restaurants(name TEXT,email TEXT primary key,phone TEXT,password TEXT)");
+        MyDB.execSQL("create Table restaurants(name TEXT,contact TEXT primary key,address TEXT,landmark TEXT,coordinates TEXT)");
+        MyDB.execSQL("create Table users(name TEXT,email TEXT primary key,phone TEXT,password TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
         MyDB.execSQL("drop Table if exists users");
         MyDB.execSQL("drop Table if exists restaurants");
+        onCreate(MyDB);
     }
 
     public boolean insertData(String name,String email,String phone,String password){
