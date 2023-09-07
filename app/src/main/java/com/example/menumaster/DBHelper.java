@@ -5,12 +5,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 
+import java.io.ByteArrayOutputStream;
+
 public class DBHelper extends SQLiteOpenHelper {
 
+    private Bitmap image;
     public static final String DBNAME = "menumaster.db";
+    private ByteArrayOutputStream objectByteArrayOutputStream;
+    private byte[] imageInBytes;
 
     public DBHelper(@Nullable Context context) {
         super(context, "menumaster.db", null, 1);
@@ -18,14 +24,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
-        MyDB.execSQL("create Table restaurants(name TEXT,contact TEXT primary key,address TEXT,landmark TEXT,coordinates TEXT)");
-        MyDB.execSQL("create Table users(name TEXT,email TEXT primary key,phone TEXT,password TEXT)");
+        MyDB.execSQL("create Table restaurants(r_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,contact TEXT,address TEXT,landmark TEXT,coordinates TEXT)");
+        MyDB.execSQL("create Table users(u_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,email TEXT primary key,phone TEXT,password TEXT)");
+        MyDB.execSQL("create Table menus(dish_name TEXT,price TEXT,r_id INTEGER,FOREIGN KEY (r_id) REFERENCES restaurants (r_id))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
         MyDB.execSQL("drop Table if exists users");
         MyDB.execSQL("drop Table if exists restaurants");
+        MyDB.execSQL("drop Table if exists menus");
         onCreate(MyDB);
     }
 
@@ -36,9 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("email",email);
         contentValues.put("phone",phone);
         contentValues.put("password",password);
-        System.out.println(contentValues);
         long result = MyDB.insert("users",null,contentValues);
-        System.out.println(result);
         if(result == -1){
             return false;
         }
@@ -72,6 +78,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean addRestaurant(String name,String contact,String address,String landmark,String coordinates){
         SQLiteDatabase MyDB = this.getWritableDatabase();
+
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("name",name);
         contentValues.put("contact",contact);
