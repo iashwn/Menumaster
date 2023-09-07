@@ -19,9 +19,6 @@
             android:name=".Restaurants"
             android:exported="false" />
         <activity
-            android:name=".DrawerBase"
-            android:exported="false" />
-        <activity
             android:name=".AdminHome"
             android:exported="false" />
         <activity
